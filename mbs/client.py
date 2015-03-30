@@ -44,9 +44,9 @@ def upload(root_url, file_or_path, session=None):
     url = sanitize_url(root_url) + "upload"
     if isinstance(file_or_path, string_types):
         with open(file_or_path, 'rb') as f:
-            _request('POST', url, files={'file' : f})
+            return _request('POST', url, files={'file' : f})
     else:
-        _request('POST', url, files={'file' : file_or_path})
+        return _request('POST', url, files={'file' : file_or_path})
 
 def ls(root_url, username=None):
     root_url = sanitize_url(root_url)
