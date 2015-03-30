@@ -56,8 +56,8 @@ def ls(root_url, username=None):
         url = root_url + "ls"
     return _request('GET', url)
 
-def configure(root_url, uri, _delete=False, **kwargs):
+def configure(root_url, uri, name, _delete=False, **kwargs):
     url = sanitize_url(root_url) + "configure"
-    data = json.dumps(dict(uri=uri, kwargs=kwargs, _delete=_delete))
+    data = json.dumps(dict(uri=uri, name=name, kwargs=kwargs, _delete=_delete))
     return _request('POST', url, data=data,
                     headers={'content-type' : 'application/json'})

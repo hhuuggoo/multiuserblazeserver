@@ -56,15 +56,14 @@ class DataManager(object):
         else:
             return join(username, filename)
 
-    def configure(self, uri, **kwargs):
+    def configure(self, name, uri, **kwargs):
         self.settings.storage['_update_time'] = time.time()
-        self.settings.storage[uri] = kwargs
-        self.settings.storage.sync()
+        kwargs['uri'] = uri
+        self.settings.storage[name] = kwargs
 
-    def delete(self, uri):
+    def delete(self, name):
         self.settings.storage['_update_time'] = time.time()
-        self.settings.storage.pop(uri, None)
-        self.settings.storage.sync()
+        self.settings.storage.pop(name, None)
 
     def resolve_resource(self, uri):
         """parses a resource (where the file base resources are stored
@@ -97,7 +96,8 @@ class DataManager(object):
                 if k == '_update_time':
                     continue
                 try:
-                    result[k] = resource(self.resolve_resource(k), **v)
+                    uri = v.pop('uri')
+                    result[k] = resource(self.resolve_resource(uri), **v)
                 except Exception as e:
                     logger.exception(e)
                     raise

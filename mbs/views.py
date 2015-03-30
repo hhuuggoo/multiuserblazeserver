@@ -84,14 +84,16 @@ def ls(username=None):
 def configure():
     kwargs = request.json['kwargs']
     uri = request.json['uri']
+    name = request.json['name']
     delete = request.json.get('_delete', False)
     username = settings.auth_backend.current_username()
     protocol, fusername, fpath, datapath = settings.datamanager.parse(uri)
     complete_path = settings.datamanager.data_path(fusername, fpath)
+    dset_name = "%s_%s" % (username, name)
     if not settings.auth_backend.can_write(complete_path, username):
         return abort(403)
     if delete:
-        settings.datamanager.delete(uri.encode('utf-8'))
+        settings.datamanager.delete(dset_name('utf-8'))
     else:
-        settings.datamanager.configure(uri.encode('utf-8'), **kwargs)
-    return jsonify(status='success')
+        settings.datamanager.configure(dset_name.encode('utf-8'), uri, **kwargs)
+    return jsonify(status='success', name=dset_name)
